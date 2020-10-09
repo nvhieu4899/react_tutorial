@@ -6,16 +6,12 @@ const Style = {
 };
 
 class Square extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: null
-        };
-    }
 
     render() {
         return (
-            <button className="btn btn-outline-secondary" style={Style} onClick={() => this.props.onClick()}>
+            <button
+                className={"btn btn-outline-secondary"}
+                style={Style} onClick={() => this.props.onClick()}>
                 {this.props.value}
             </button>
         );
