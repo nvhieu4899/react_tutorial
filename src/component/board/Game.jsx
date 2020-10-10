@@ -54,8 +54,10 @@ class Game extends React.Component {
         }
         squares[i] = this.state.xIsNext ? 'X' : 'O';
 
-        let newMove = `${squares[i]} moves ${i}`;
+        const newMoveCol = i % 3 + 1;
+        const newMoveRow = Math.floor(i / 3) + 1;
 
+        let newMove = `${squares[i]} moves (${newMoveCol},${newMoveRow})`;
 
         this.setState(
             {
@@ -68,8 +70,6 @@ class Game extends React.Component {
     }
 
     jumpTo(step) {
-
-        const currState = this.state;
 
         this.setState({
             ...this.state,
@@ -99,8 +99,9 @@ class Game extends React.Component {
     }
 
     render() {
-        const history = this.state.history;
+        const {history, gameInfo} = this.state;
         const current = history[this.state.stepNumber];
+
         const hasWinner = this.calculateWinner(current.squares);
         let status;
         let winner;
@@ -119,7 +120,7 @@ class Game extends React.Component {
         }
 
         let move = history.map((step, index) => {
-            const desc = index ? `Go to move #${index}` : 'Go to start';
+            const desc = index ? `#${index} ${this.state.gameInfo[index - 1]}` : 'Go to start';
             return (<li key={index}>
                 <button
                     className={"btn btn-info" + (index === this.state.stepNumber ? " font-weight-bolder" : undefined)}
@@ -157,10 +158,9 @@ class Game extends React.Component {
                             <button
                                 className="btn btn-secondary"
                                 onClick={() => this.toggleSortMoves()}>{this.state.reverseMove ? "Sort moves ascending" : "Sort moves descending"}</button>
-
-                            <ol>
+                            <ul>
                                 {move}
-                            </ol>
+                            </ul>
                         </div>
                     </div>
                 </div>
