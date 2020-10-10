@@ -1,30 +1,38 @@
 import React from "react";
 import Square from "./Square";
 
-function Board({squares,onClick}) {
+function Board({squares, onClick, highlight, width, height}) {
 
 
-    const renderSquare = (i) => {
+    const renderSquare = (i, isHighlight) => {
         return <Square value={squares[i]}
-                       onClick={() => onClick(i)}/>;
+                       onClick={() => onClick(i)}
+                       highlight={isHighlight}
+                       key={i}/>;
     }
+
+
+    const renderBoard = () => {
+
+        const lines = [];
+
+        for (let i = 0; i < height; i++) {
+
+            const currLine = [];
+            for (let j = 0; j < width; j++) {
+                let index = i * width + j;
+                let isHighlight = highlight.includes(index);
+                currLine.push(renderSquare(index, isHighlight));
+            }
+            lines.push(<div key={i}>{currLine}</div>);
+        }
+        return lines;
+    }
+
+
     return (
         <div>
-            <div>
-                {renderSquare(0)}
-                {renderSquare(1)}
-                {renderSquare(2)}
-            </div>
-            <div>
-                {renderSquare(3)}
-                {renderSquare(4)}
-                {renderSquare(5)}
-            </div>
-            <div>
-                {renderSquare(6)}
-                {renderSquare(7)}
-                {renderSquare(8)}
-            </div>
+            {renderBoard()}
         </div>
     );
 

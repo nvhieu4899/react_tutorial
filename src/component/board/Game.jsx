@@ -10,7 +10,8 @@ class Game extends React.Component {
             }],
             xIsNext: true,
             gameInfo: [],
-            stepNumber: 0
+            stepNumber: 0,
+            reverseMove: false
         };
     }
 
@@ -67,7 +68,11 @@ class Game extends React.Component {
     }
 
     jumpTo(step) {
+
+        const currState = this.state;
+
         this.setState({
+            ...this.state,
             stepNumber: step,
             xIsNext: (step % 2) === 0
         })
@@ -75,11 +80,22 @@ class Game extends React.Component {
 
     replay() {
         this.setState({
+            ...this.state,
             history: [{squares: Array(9).fill(null)}],
             xIsNext: true,
             gameInfo: [],
-            stepNumber: 0
+            stepNumber: 0,
         });
+    }
+
+
+    toggleSortMoves() {
+        this.setState(
+            {
+                ...this.state,
+                reverseMove: !this.state.reverseMove
+            }
+        )
     }
 
     render() {
@@ -87,28 +103,36 @@ class Game extends React.Component {
         const current = history[this.state.stepNumber];
         const hasWinner = this.calculateWinner(current.squares);
         let status;
+        let winner;
+        let highlight = [];
 
         if (hasWinner) {
-            const {winner, highlight} = hasWinner;
-            status = 'Winner: ' + winner;
-            const [a, b, c] = highlight;
-
+            winner = hasWinner.winner;
+            highlight = hasWinner.highlight;
+            status = <span className={"h2 text-warning"}>{'Winner: ' + winner}</span>;
         } else {
-            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+            status = <span className="h3">{'Next player: ' + (this.state.xIsNext ? 'X' : 'O')}</span>;
         }
 
-        if (!hasWinner && history.length > 9) {
-            status = 'Deuce';
+        if (!hasWinner && this.state.stepNumber === 9) {
+            status = <span className={"h2 text-secondary"}>Deuce</span>;
         }
 
-        const move = history.map((step, index) => {
+        let move = history.map((step, index) => {
             const desc = index ? `Go to move #${index}` : 'Go to start';
             return (<li key={index}>
-                <button className="btn btn-info" onClick={() => this.jumpTo(index)}>
+                <button
+                    className={"btn btn-info" + (index === this.state.stepNumber ? " font-weight-bolder" : undefined)}
+                    onClick={() => this.jumpTo(index)}>
                     {desc}
                 </button>
             </li>);
         });
+
+        if (this.state.reverseMove) {
+            move = move.reverse();
+        }
+
 
         return (
             <div className="container">
@@ -119,13 +143,21 @@ class Game extends React.Component {
                             <Board
                                 squares={current.squares}
                                 onClick={(i) => this.handleClick(i)}
+                                width={3}
+                                height={3}
+                                highlight={highlight}
                             />
                             <button className="btn btn-outline-primary mt-5" onClick={() => this.replay()}>Rematch
                             </button>
                         </div>
                         <div className="float-right">
+
                             <div className="status">{status}</div>
                             <div>Game info</div>
+                            <button
+                                className="btn btn-secondary"
+                                onClick={() => this.toggleSortMoves()}>{this.state.reverseMove ? "Sort moves ascending" : "Sort moves descending"}</button>
+
                             <ol>
                                 {move}
                             </ol>

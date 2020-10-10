@@ -5,17 +5,18 @@ const Style = {
     height: "50px",
 };
 
-class Square extends React.Component {
+function Square({value, onClick, highlight,key}) {
 
-    render() {
-        return (
-            <button
-                className={"btn btn-outline-secondary"}
-                style={Style} onClick={() => this.props.onClick()}>
-                {this.props.value}
-            </button>
-        );
-    }
+    return (
+        <button key={key}
+            className={"btn btn-outline-secondary " + (value === 'X' ? " text-danger " : " text-primary ")}
+            style={Style} onClick={() => onClick()}>
+            <span className={highlight === true ? " badge badge-success " : undefined}>
+                {value}
+            </span>
+        </button>
+    );
+
 }
 
 export default Square;
