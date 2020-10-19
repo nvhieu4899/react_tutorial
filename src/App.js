@@ -5,11 +5,11 @@ import Game from "./component/board/Game";
 
 
 function App() {
-    return (
-        <div className="App">
-            <Game/>
-        </div>
-    );
+  return (
+    <div className="App">
+      <Game boardSize={3} movesToWin={3}/>
+    </div>
+  );
 }
 
 export default App;
